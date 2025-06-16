@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Typing Speed Test</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Typing Speed Test</h1>
+    <p id="test-text">Loading text...</p>
+    <textarea id="user-input" placeholder="Start typing here..." oninput="startTimer()"></textarea>
+    <div class="info">
+      <span>Time: <b id="time">60</b>s</span>
+      <button onclick="restart()">Restart</button>
+    </div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    let testText = "";
+    let startTime = null;
+    let timer = null;
+    let timeLeft = 60;
+
+    async function fetchText() {
+      try {
+        const response = await fetch('/get_text');
+        const data = await response.text();
+        testText = data;
+        document.getElementById('test-text').innerText = testText;
+      } catch (error) {
+        document.getElementById('test-text').innerText = "Error loading text. Please try again.";
+        console.error("Error fetching text:", error);
+      }
+    }
+
+    function startTimer() {
+      if (startTime === null) {
+        startTime = Date.now();
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById('time').innerText = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            submitTest();
+          }
+        }, 1000);
+      }
+    }
+
+    async function submitTest() {
+      const typedText = document.getElementById('user-input').value;
+      const elapsedSeconds = (Date.now() - startTime) / 1000;
+
+      try {
+        const response = await fetch('/calculate', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            typedText,
+            originalText: testText,
+            time: elapsedSeconds
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+        if (result.error) {
+          throw new Error(result.error);
+        }
+
+        document.getElementById('results').innerHTML = `
+          <h3>Results</h3>
+          <p><b>Words Per Minute (WPM):</b> ${result.wpm}</p>
+          <p><b>Characters Per Minute (CPM):</b> ${result.cpm}</p>
+          <p><b>Accuracy:</b> ${result.accuracy}</p>
+          <p><b>Time Taken:</b> ${elapsedSeconds.toFixed(2)} seconds</p>
+        `;
+      } catch (error) {
+        document.getElementById('results').innerHTML = `
+          <h3>Error</h3>
+          <p>${error.message}</p>
+        `;
+        console.error("Error submitting test:", error);
+      }
+    }
+
+    function restart() {
+      clearInterval(timer);
+      startTime = null;
+      timeLeft = 60;
+      document.getElementById('time').innerText = 60;
+      document.getElementById('user-input').value = "";
+      document.getElementById('results').innerHTML = "";
+      document.getElementById('test-text').innerText = "Loading new text...";
+      fetchText();
+    }
+
+    window.onload = fetchText;
+  </script>
+</body>
+</html>
