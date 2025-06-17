@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <audio id="alarmSound" src="/static/ding.mp3" preload="auto"></audio>
+ <div class="container">
+    <h1 id="title">Pomodoro Timer</h1>
+    <div id="timer">25:00</div>
+    <div class="buttons">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
+    <div id="checkmarks"></div>
+ </div>   
+ <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
