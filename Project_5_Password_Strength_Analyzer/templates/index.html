@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Password Strength Analyzer</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Password Strength Analyzer</h2>
+    <input type="text" id="username" placeholder="Username/Email">
+    <input type="text" id="password" placeholder="Type your password...">
+    <div id="strength"></div>
+    <ul id="suggestions"></ul>
+    <button onclick="generatePassword()">Generate Strong Password</button>
+    <button onclick="savePassword()">Save Password</button>
+    <div id="saved-passwords" style="margin-top: 20px;">
+      <h3>Saved Passwords</h3>
+      <button onclick="loadSavedPasswords()">Load Saved Passwords</button>
+      <ul id="password-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    const passwordInput = document.getElementById("password");
+    const usernameInput = document.getElementById("username");
+
+    passwordInput.addEventListener("input", function () {
+        const password = passwordInput.value;
+
+        // Clear suggestions & strength if input is empty
+        if (password.trim() === "") {
+        document.getElementById("strength").textContent = "";
+        document.getElementById("suggestions").innerHTML = "";
+        return;
+        }
+
+        fetch("/check_strength", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ password: password })
+        })
+        .then(res => res.json())
+        .then(data => {
+        document.getElementById("strength").textContent = "Strength: " + data.strength;
+
+        const suggestionList = document.getElementById("suggestions");
+        suggestionList.innerHTML = "";
+
+        data.suggestions.forEach(s => {
+            const li = document.createElement("li");
+            li.textContent = s;
+            suggestionList.appendChild(li);
+        });
+        });
+    });
+
+    function generatePassword() {
+        fetch("/generate_password")
+        .then(res => res.json())
+        .then(data => {
+            passwordInput.value = data.password;
+            passwordInput.dispatchEvent(new Event("input")); // trigger strength analysis
+        });
+    }
+    function savePassword() {
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+        
+        if (!username || !password) {
+            alert("Please enter both username and password");
+            return;
+        }
+
+        fetch("/save_password", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ username: username, password: password })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Password saved successfully!");
+        });
+    }
+    function loadSavedPasswords() {
+        fetch("/get_passwords")
+        .then(res => res.json())
+        .then(data => {
+            const passwordList = document.getElementById("password-list");
+            passwordList.innerHTML = "";
+            
+            data.credentials.forEach(cred => {
+                const li = document.createElement("li");
+                li.textContent = `Username: ${cred[0]}, Password: ${cred[1]}`;
+                passwordList.appendChild(li);
+            });
+        });
+    }
+    </script>
+
+</body>
+</html>
