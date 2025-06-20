@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Art Result</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', monospace;
+            background: linear-gradient(135deg, #1c1c1c, #2c3e50);
+            color: #f1f1f1;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            color: #ffcc70;
+            text-shadow: 1px 1px 5px #000;
+            margin-bottom: 20px;
+        }
+
+        .ascii-box {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .button {
+            margin-top: 20px;
+            background-color: #ffcc70;
+            color: #1c1c1c;
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #ffaa33;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <h1>ASCII Art Result</h1>
+    <div class="ascii-box">
+        <pre>{{ ascii_art }}</pre>
+    </div>
+    <a class="button" href="/">Convert Another</a>
+    <footer>Created by Neeraj Bhardwaj </footer>
+</body>
+</html>
