@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image to ASCII Art Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1c1c1c, #2c3e50);
+            color: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #ffcc70;
+            text-shadow: 1px 1px 5px #000;
+        }
+
+        form {
+            background-color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            margin: 15px 0;
+            background-color: #444;
+            color: #f1f1f1;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #ffcc70;
+            color: #1c1c1c;
+            padding: 10px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffaa33;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Convert Image to ASCII Art</h1>
+    <form method="post" enctype="multipart/form-data" action="{% url 'convert_image' %}">
+        {% csrf_token %}
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Convert Now</button>
+    </form>
+    <footer>Created by Neeraj Bhardwaj</footer>
+</body>
+</html>
