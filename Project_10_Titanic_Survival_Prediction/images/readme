@@ -1,0 +1,3 @@
+A command-line machine learning tool that predicts whether a passenger would survive the Titanic disaster based on their class, age, gender, fare, and boarding location.
+
+This project uses the Titanic dataset and a trained Random Forest Classifier to make survival predictions through simple user input.
